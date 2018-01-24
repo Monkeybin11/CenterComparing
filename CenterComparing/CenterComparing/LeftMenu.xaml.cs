@@ -12,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MahApps.Metro.Controls;
 
 namespace CenterComparing
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LeftMenu.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class LeftMenu : UserControl
     {
-        public MainWindow()
+        public LeftMenu()
         {
             InitializeComponent();
         }
