@@ -6,6 +6,7 @@
         xmlns:xc="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:CenterComparing"
+        xmlns:uc="clr-namespace:CenterComparing"              
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
     <Grid>
@@ -38,7 +39,7 @@
                 <Button x:Name="btnLoad"   Grid.Row="0" Grid.Column="0" Content="Load"    Style="{StaticResource BtnBase}"   />
                 <Button x:Name="btnExport" Grid.Row="0" Grid.Column="1" Content="Export"  Style="{StaticResource BtnBase}" />
 
-                <Button x:Name="btnThreshold"    Grid.Row="1" Grid.Column="0" Content="Threshold"    Style="{StaticResource AccentedSquareButtonStyle}" />
+                <Button x:Name="btnThreshold"    Grid.Row="1" Grid.Column="0" Content="Threshold"    Style="{StaticResource BtnBase}" />
                 <Button x:Name="btnAdpThreshold" Grid.Row="2" Grid.Column="0" Content="AdpThreshold" Style="{StaticResource BtnBase}" />
                 <Button x:Name="btnMedian"       Grid.Row="3" Grid.Column="0" Content="Median"       Style="{StaticResource BtnBase}" />
                 <Button x:Name="btnNormalize"    Grid.Row="4" Grid.Column="0" Content="Normalize"    Style="{StaticResource BtnBase}" />
@@ -48,6 +49,8 @@
                 <xc:IntegerUpDown x:Name="nudMedian" Grid.Row="3" Grid.Column="1"        />
                 <xc:IntegerUpDown x:Name="nudNormalize" Grid.Row="4" Grid.Column="1"     />
 
+                <Label x:Name="lblPos"  Grid.Row="5" Grid.Column="0"/>
+
                 <Label Grid.Row="6" Grid.ColumnSpan="2" Content=" - History - " Style="{StaticResource LblTitle}"/>
                 <xc:RichTextBox Grid.Row="7" Grid.ColumnSpan="2" Background="AliceBlue" Margin="5"/>
 
@@ -55,7 +58,8 @@
         </Border>
 
         <Border x:Name="border" Grid.Row="1" Grid.Column="1" BorderThickness="2" BorderBrush="DarkSlateGray" Margin="5" >
-            
+            <uc:ImgWindow x:Name="imgWindow" MouseRightButtonDown="imgWindow_MouseRightButtonDown" MouseMove="imgWindow_MouseMove" MouseLeftButtonUp="imgWindow_MouseLeftButtonUp"/>
+
         </Border>
     </Grid>
 </Controls:MetroWindow>

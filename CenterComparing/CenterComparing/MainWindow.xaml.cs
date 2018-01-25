@@ -24,6 +24,22 @@ namespace CenterComparing
         public MainWindow()
         {
             InitializeComponent();
+            imgWindow.evtCurrentPos += (s) => this.BeginInvoke(() => lblPos.Content = s);
+        }
+
+        private void imgWindow_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+           
+        }
+
+        private void imgWindow_MouseMove(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void imgWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }
