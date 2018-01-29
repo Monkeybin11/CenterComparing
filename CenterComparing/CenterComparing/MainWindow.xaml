@@ -3,13 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:xc="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:CenterComparing"
         xmlns:uc="clr-namespace:CenterComparing"              
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800">
-    <Grid>
+        Title="Center Comparing" Height="800" Width="1100"  ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterScreen"
+        Icon="CenterComparing_Icon1.png"             
+        BorderBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="1" >
+    <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width = "0.3*" />
             <ColumnDefinition Width = "*" />
@@ -18,47 +20,117 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Controls:MetroProgressBar x:Name="prbMain" Grid.Column="1" VerticalAlignment="Center" Width="400" Height="20" IsIndeterminate="False" />
+        <Controls:MetroTabControl Grid.RowSpan="2" Grid.ColumnSpan="2">
+            <Controls:MetroTabItem Header="Single File Analysis" FontSize="12" >
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.15*"/>
+                        <ColumnDefinition Width="0.15*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="btnLoadImg"   Grid.Row="0" Grid.Column="0" Content="Load Image"    Style="{DynamicResource SquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
+                    <Button x:Name="btnStart" Grid.Row="0" Grid.Column="1" Content="Start" Style="{StaticResource AccentedSquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
+
+                    <Button x:Name="btnClear" Grid.Row="1" Grid.Column="1" Content="Clear" Style="{DynamicResource SquareButtonStyle}"  Margin="5,10,5,10" Click="Btn_Function_Click"/>
+                    <Button x:Name="btnSaveImg" Grid.Row="1" Grid.Column="0" Content="Save Image" Style="{DynamicResource SquareButtonStyle}"  Margin="5,10,5,10" Click="Btn_Function_Click"/>
+
+                    <Button x:Name="btnLoadConfig" Grid.Row="2" Grid.Column="0" Content="Load Config" Style="{DynamicResource SquareButtonStyle}"  Margin="5,10,5,10" Click="Btn_Function_Click"/>
+                    <Button x:Name="btnExportConfig" Grid.Row="2" Grid.Column="1" Content="Export Config" Style="{DynamicResource SquareButtonStyle}"  Margin="5,10,5,10" Click="Btn_Function_Click"/>
 
 
-        <Border Grid.Column="0" Grid.Row="1" BorderThickness="2" BorderBrush="DarkSlateGray" Margin="5" >
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="3*"/>
-                </Grid.RowDefinitions>
-                <Button x:Name="btnLoad"   Grid.Row="0" Grid.Column="0" Content="Load"    Style="{StaticResource BtnBase}"   />
-                <Button x:Name="btnExport" Grid.Row="0" Grid.Column="1" Content="Export"  Style="{StaticResource BtnBase}" />
+                    <Controls:ToggleSwitch x:Name="tglConfig" Header="Use Mouse Drag Config" OnLabel="Yes" OffLabel="No" Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="2" IsChecked="True" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="10" AutomationProperties.IsRowHeader="True" />
 
-                <Button x:Name="btnThreshold"    Grid.Row="1" Grid.Column="0" Content="Threshold"    Style="{StaticResource BtnBase}" />
-                <Button x:Name="btnAdpThreshold" Grid.Row="2" Grid.Column="0" Content="AdpThreshold" Style="{StaticResource BtnBase}" />
-                <Button x:Name="btnMedian"       Grid.Row="3" Grid.Column="0" Content="Median"       Style="{StaticResource BtnBase}" />
-                <Button x:Name="btnNormalize"    Grid.Row="4" Grid.Column="0" Content="Normalize"    Style="{StaticResource BtnBase}" />
+                    <Button x:Name="btnApplyMouseConfig" Grid.Row="5" Grid.ColumnSpan="2" Content="Apply Mouse Config" Style="{DynamicResource SquareButtonStyle}"  Margin="5,10,5,10" Click="Btn_Function_Click"/>
 
-                <xc:IntegerUpDown x:Name="nudThreshold" Grid.Row="1" Grid.Column="1"     />
-                <xc:IntegerUpDown x:Name="nudAdpThreshold" Grid.Row="2" Grid.Column="1"  />
-                <xc:IntegerUpDown x:Name="nudMedian" Grid.Row="3" Grid.Column="1"        />
-                <xc:IntegerUpDown x:Name="nudNormalize" Grid.Row="4" Grid.Column="1"     />
 
-                <Label x:Name="lblPos"  Grid.Row="5" Grid.Column="0"/>
+                    <Label Content=" Pixel Resolution (um) : " Grid.Row="6" Style="{StaticResource LblSide}"/>
+                    <Controls:NumericUpDown x:Name="nudPixelResolution" Value="2" Margin="2,13,2,13" Maximum="10000" Minimum="0.01" Grid.Row="6" Grid.Column="1" />
 
-                <Label Grid.Row="6" Grid.ColumnSpan="2" Content=" - History - " Style="{StaticResource LblTitle}"/>
-                <xc:RichTextBox Grid.Row="7" Grid.ColumnSpan="2" Background="AliceBlue" Margin="5"/>
+                    <Label Content="Circle Margin (pixel) : " Grid.Row="7" Style="{StaticResource LblSide}"/>
+                    <Controls:NumericUpDown x:Name="nudMargin" Value="40" Margin="2,13,2,13" Maximum="100" Minimum="10" Grid.Row="7" Grid.Column="1" ValueChanged="nudMargin_ValueChanged"/>
 
-            </Grid>
-        </Border>
+
+                    <Label Content="Threshold : " Grid.Row="8" Style="{StaticResource LblSide}"/>
+                    <Controls:NumericUpDown x:Name="nudThreshold" Value="50" Margin="2,13,2,13" Maximum="100" Minimum="10" Grid.Row="8" Grid.Column="1" />
+
+                    <Label Content="Distance (um) :"  Grid.Row="9" Style="{StaticResource LblSide}" FontSize="14" FontWeight="Bold"/>
+                    <TextBox x:Name="txbDis" Grid.Row="9" Grid.Column="1" Margin="5,15,5,15" TextAlignment="Right" />
+
+                    <Label Content="* Mouse Drag  + Alt set outer circle" Grid.Row="10" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+                    <Label Content="* Mouse Drag + Ctrl set inner circle" Grid.Row="11" Grid.ColumnSpan="2" Margin="5"/>
+
+
+                </Grid>
+            </Controls:MetroTabItem>
+            <Controls:MetroTabItem Header="Multi Files Analysis" FontSize="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.15*"/>
+                        <ColumnDefinition Width="0.15*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="btnLoadMultiImg"   Grid.Row="0" Grid.Column="0" Content="Load Image"    Style="{DynamicResource SquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
+                    <Button x:Name="btnMultiStart" Grid.Row="0" Grid.Column="1" Content="Start" Style="{StaticResource AccentedSquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
+
+                    <DataGrid x:Name="dtgMain" ItemsSource="{Binding People}" Margin="10,20,10,0" Grid.Row="1" Grid.RowSpan="10" Grid.ColumnSpan="2" Style="{StaticResource AzureDataGrid}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="No." Width="*" Binding="{Binding no}"/>
+                            <DataGridTextColumn Header="Name" Width="2*" Binding="{Binding name}"/>
+                            <DataGridTextColumn Header="Error(um)" Width="2*" Binding="{Binding error}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+              
+
+            </Controls:MetroTabItem>
+        </Controls:MetroTabControl>
+          
+       
 
         <Border x:Name="border" Grid.Row="1" Grid.Column="1" BorderThickness="2" BorderBrush="DarkSlateGray" Margin="5" >
-            <uc:ImgWindow x:Name="imgWindow" MouseRightButtonDown="imgWindow_MouseRightButtonDown" MouseMove="imgWindow_MouseMove" MouseLeftButtonUp="imgWindow_MouseLeftButtonUp"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <uc:ImgWindow x:Name="imgWindow" Margin="1" Height="600" Width="800"/>
+                <Border Grid.Row="1" BorderThickness="2" BorderBrush="DarkSlateGray" Margin="-2" >
+                    <DockPanel >
+                        <Label x:Name="lblPos" DockPanel.Dock="Right"  Content="X : 0 , Y : 0" VerticalAlignment="Center" FontWeight="SemiBold" />
+                        <Label  DockPanel.Dock="Left" Content="Image Resolution (Width x Height) : " VerticalAlignment="Center" FontWeight="SemiBold"/>
+                        <Label x:Name="lblImgResolution" DockPanel.Dock="Left" Content="0 x 0 " VerticalAlignment="Center" FontWeight="SemiBold"/>
+                    </DockPanel>
+                   
+                </Border>
+            </Grid>
+          
 
         </Border>
     </Grid>
