@@ -56,9 +56,9 @@ namespace CenterComparing
                 {
                     return;
                 }
-                
-                  var img = BaseImg.ThresholdBinary(new Gray(cfg.Threshold), new Gray(255))
-                                 .SmoothMedian( (int)cfg.Resolution * 10 + 1 );
+
+                var img = BaseImg.ThresholdBinary(new Gray(cfg.Threshold), new Gray(255));
+                                 //.SmoothMedian( (int)cfg.Resolution * 10 + 1 );
                 var contours = new VectorOfVectorOfPoint();
                 
                 CvInvoke.FindContours(img, contours, null, Emgu.CV.CvEnum.RetrType.List, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxNone);
@@ -153,7 +153,7 @@ namespace CenterComparing
             var line = new LineSegment2D( points[0], points[1]);
 
              img.Draw(line,new Bgr(153,51,153),1);
-            img.Save(@"F:\제작프로그램\비손메디칼_윤동국\비손메디칼 이미지\line.png");
+           
             return img;
         }
 

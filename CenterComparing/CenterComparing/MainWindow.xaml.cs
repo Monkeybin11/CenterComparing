@@ -188,7 +188,7 @@ namespace CenterComparing
             {
                 System.Windows.MessageBox.Show("Some Error occur. please contact developer.Error Log will be saved. please choose log save path [Error Number 101 ] ");
                 var ofd = new System.Windows.Forms.SaveFileDialog();
-                ofd.Filter = "Image Files (*.bmp,*.png,*.jpg,*.jpeg) | *.bmp;*.png;*.jpg;*.jpeg";
+                ofd.Filter = "Text Files (*.txt|*.txt";
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     File.WriteAllText(ofd.FileName,er.ToString());
