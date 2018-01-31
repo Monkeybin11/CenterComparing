@@ -34,8 +34,8 @@ namespace CenterComparing
         MCvScalar Outercolor = new MCvScalar(20, 250, 20);
         MCvScalar Innercolor = new MCvScalar(14, 40, 240);
 
-        double RatioW;
-        double RatioH;
+        public double RatioW;
+        public double RatioH;
 
         public void SaveImg()
         {
@@ -71,6 +71,9 @@ namespace CenterComparing
 
                 var centers = FindCenter(cntrlist);
                 var centerlist = new List<double[]>();
+
+                double textRatio = Math.Pow( Math.E , RatioW);
+
                 for (int i = 0; i < centers.Count(); i++)
                 {
                     CvInvoke.Circle(ClrImg, centers[i], 5, colorlist[i]);
@@ -81,16 +84,16 @@ namespace CenterComparing
                     var y = realy.ToString();
                     string xy = x + " , " + y + " (um)";
 
-                    System.Drawing.Point textpos = new System.Drawing.Point(centers[i].X - 40 - (i*25), centers[i].Y - 10 - (i*25));
-                    CvInvoke.PutText(ClrImg, xy, textpos, FontFace.HersheySimplex, 0.4, colorlist[i]);
+                    System.Drawing.Point textpos = new System.Drawing.Point(centers[i].X - (int)((40 - (i*25 ) )* RatioW), centers[i].Y - (int)(10 - (i*25) * RatioH));
+                    CvInvoke.PutText(ClrImg, xy, textpos, FontFace.HersheySimplex, RatioW/2.0, colorlist[i], thickness: (int)(2 * RatioW));
 
                     centerlist.Add(new double[] { realx, realy });
                 }
                 double errorDistance = CalcDistance(centerlist);
                 ClrImg = CenterDiffDraw(centers, ClrImg);
 
-                System.Drawing.Point textdifpos = new System.Drawing.Point(centers[0].X + 40 , centers[0].Y + 10 );
-                CvInvoke.PutText(ClrImg, "Error : "+ errorDistance.ToString("F4") + " (um)", textdifpos, FontFace.HersheySimplex, 0.4, new MCvScalar(153, 51, 153));
+                System.Drawing.Point textdifpos = new System.Drawing.Point(centers[0].X + (int)(40*RatioW) , centers[0].Y + (int)(10*RatioH) );
+                CvInvoke.PutText(ClrImg, "Error : "+ errorDistance.ToString("F4") + " (um)", textdifpos, FontFace.HersheySimplex, RatioW/2.0, new MCvScalar(153, 51, 153) , thickness:(int)(2*RatioW));
 
                 var res = ToBitmapSource(ClrImg);
                 evtProcessedImg(res);
@@ -107,6 +110,8 @@ namespace CenterComparing
         {
             List<VectorOfPoint> cntrlist = new List<VectorOfPoint>();
             List<MCvScalar> colorlist = new List<MCvScalar>();
+                     
+            var tempimg = ClrImg.Copy();
 
             for (int i = 0; i < contours.Size; i++)
             {
@@ -116,7 +121,7 @@ namespace CenterComparing
                 if (area < cfg.OuterUp.ToCircleArea()
                 && area > cfg.OuterDw.ToCircleArea())
                 {
-                    CvInvoke.DrawContours(ClrImg, contours, i, Outercolor, thickness: 3);
+                    CvInvoke.DrawContours(ClrImg, contours, i, Outercolor, thickness: (int)(3*RatioW));
                     var cntr = contours[i];
                     cntrlist.Add(cntr);
                     colorlist.Add(Outercolor);
@@ -125,7 +130,7 @@ namespace CenterComparing
                 if (area < cfg.InnerUp.ToCircleArea()
                    && area > cfg.InnerDw.ToCircleArea())
                 {
-                    CvInvoke.DrawContours(ClrImg, contours, i, Innercolor, thickness: 3);
+                    CvInvoke.DrawContours(ClrImg, contours, i, Innercolor, thickness: (int)(3 * RatioW));                                                  
                     var cntr = contours[i];
                     cntrlist.Add(cntr);
                     colorlist.Add(Innercolor);
@@ -207,11 +212,11 @@ namespace CenterComparing
                 {
                     var tempimg = new Img(ofd.FileName);
 
-                    RatioW = tempimg.Width / 800;
-                    RatioH = tempimg.Height / 600;
+                    RatioW = tempimg.Width / 800.0;
+                    RatioH = tempimg.Height / 600.0;
 
-                    BaseImg = tempimg.Resize(800, 600, Inter.Area);
-                    ClrOriginalImg = new ColorImg(ofd.FileName).Resize(800, 600, Inter.Area);
+                    BaseImg = tempimg;//.Resize(800, 600, Inter.Area);
+                    ClrOriginalImg = new ColorImg(ofd.FileName);//.Resize(800, 600, Inter.Area);
                     return ofd.FileName;
                 }).Result;
             }
@@ -236,11 +241,11 @@ namespace CenterComparing
 
                 var tempimg = new Img(path);
 
-                RatioW = tempimg.Width / 800 ;
-                RatioH = tempimg.Height / 600;
+                RatioW = tempimg.Width / 800.0 ;
+                RatioH = tempimg.Height / 600.0;
 
-                BaseImg = tempimg.Resize(800, 600, Inter.Area);
-                ClrOriginalImg = new ColorImg(path).Resize(800, 600, Inter.Area);
+                BaseImg = tempimg;//.Resize(800, 600, Inter.Area);
+                ClrOriginalImg = new ColorImg(path);//.Resize(800, 600, Inter.Area);
                 return path;
             }
             return "NG";
@@ -293,11 +298,11 @@ namespace CenterComparing
                         try
                         {
                             var path = srclist[k].fullname;
-                            var tempimg = new Img(path);
-                            RatioW = tempimg.Width / 800;
-                            RatioH = tempimg.Height / 600;
-                            BaseImg = tempimg.Resize(800, 600, Inter.Area);
-                            ClrOriginalImg = new ColorImg(path).Resize(800, 600, Inter.Area);
+                            BaseImg = new Img(path);
+                            RatioW = BaseImg.Width / 800.0;
+                            RatioH = BaseImg.Height / 600.0;
+                            //BaseImg = tempimg.Resize(800, 600, Inter.Area);
+                            ClrOriginalImg = new ColorImg(path);//.Resize(800, 600, Inter.Area);
                             ClrImg = ClrOriginalImg.Copy();
 
                             // Processing
@@ -383,7 +388,7 @@ namespace CenterComparing
     public static class Ext
     {
         public static double ToCircleArea(
-            this double src)
+            this double src )
             => (double)(Math.PI * Math.Pow(src/2, 2));
     }
 

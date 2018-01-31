@@ -84,7 +84,9 @@ namespace CenterComparing
                         {
                             cfg = imgWindow.GetConfig(
                            (double)nudPixelResolution.Value,
-                           (int)nudThreshold.Value);
+                           (int)nudThreshold.Value,
+                           CoreMain.RatioW,
+                           CoreMain.RatioH);
                         }
                         else
                         {
@@ -127,7 +129,9 @@ namespace CenterComparing
                         {
                             tempconfg = imgWindow.GetConfig(
                            (double)nudPixelResolution.Value,
-                           (int)nudThreshold.Value);
+                           (int)nudThreshold.Value,
+                           CoreMain.RatioW,
+                           CoreMain.RatioH);
                         }
                         else
                         {
@@ -151,7 +155,9 @@ namespace CenterComparing
                     case "btnApplyMouseConfig":
                         CurrentConfig = imgWindow.GetConfig(
                            (double)nudPixelResolution.Value,
-                           (int)nudThreshold.Value);
+                           (int)nudThreshold.Value,
+                            CoreMain.RatioW,
+                           CoreMain.RatioH);
                         break;
 
 
@@ -168,12 +174,13 @@ namespace CenterComparing
                         {
                             tempconfg2 = imgWindow.GetConfig(
                            (double)nudPixelResolution.Value,
-                           (int)nudThreshold.Value);
+                           (int)nudThreshold.Value,
+                           CoreMain.RatioW,
+                           CoreMain.RatioH);
                         }
                         else
                         {
                             tempconfg2 = CurrentConfig;
-                           
                         }
                         if (tempconfg2 == null)
                         {

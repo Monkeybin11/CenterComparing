@@ -80,7 +80,7 @@ namespace CenterComparing
             ImgBack.Source = OriginalImg;
         }
 
-        public Config GetConfig(double resol , int thres)
+        public Config GetConfig(double resol , int thres , double wratio, double hratio)
         {
             if (OuterRect != null
                 && OuterRect_in != null
@@ -89,10 +89,10 @@ namespace CenterComparing
             {
                var output = new Config()
                 {
-                    OuterUp = Math.Max(OuterRect.Width, OuterRect.Height),
-                    OuterDw = Math.Min(OuterRect_in.Width, OuterRect_in.Height) - 5,
-                    InnerUp = Math.Max(InnerRect.Width, InnerRect.Height),
-                    InnerDw = Math.Min(InnerRect_in.Width, InnerRect_in.Height) - 5,
+                    OuterUp = Math.Max(OuterRect.Width*wratio, OuterRect.Height * hratio),
+                    OuterDw = Math.Min(OuterRect_in.Width * wratio, OuterRect_in.Height * hratio) - 5,
+                    InnerUp = Math.Max(InnerRect.Width * wratio, InnerRect.Height * hratio),
+                    InnerDw = Math.Min(InnerRect_in.Width * wratio, InnerRect_in.Height * hratio) - 5,
                     Resolution = resol,
                     Threshold = thres
                 };
