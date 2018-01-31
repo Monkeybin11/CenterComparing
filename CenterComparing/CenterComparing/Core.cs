@@ -74,21 +74,31 @@ namespace CenterComparing
 
                 double textRatio = Math.Pow( Math.E , RatioW);
 
+                List<double[]> xys = new List<double[]>();
+
                 for (int i = 0; i < centers.Count(); i++)
                 {
-                    CvInvoke.Circle(ClrImg, centers[i], 5, colorlist[i]);
+                    CvInvoke.Circle(ClrImg, centers[i], 5, colorlist[i] );
+                    CvInvoke.Circle(ClrImg, centers[i], (int)(5*RatioW), colorlist[i] , thickness:RatioW > 1 ? (int)RatioW : 1);
                     var realx = (centers[i].X * RatioW * cfg.Resolution);
                     var realy = (centers[i].Y * RatioH * cfg.Resolution);
 
-                    var x = realx.ToString();
-                    var y = realy.ToString();
-                    string xy = x + " , " + y + " (um)";
+                    //var x = realx.ToString();
+                    //var y = realy.ToString();
+                    //string xy = x + " , " + y + " (um)";
 
-                    System.Drawing.Point textpos = new System.Drawing.Point(centers[i].X - (int)((40 - (i*25 ) )* RatioW), centers[i].Y - (int)(10 - (i*25) * RatioH));
-                    CvInvoke.PutText(ClrImg, xy, textpos, FontFace.HersheySimplex, RatioW/2.0, colorlist[i], thickness: (int)(2 * RatioW));
-
+                  
+                 
                     centerlist.Add(new double[] { realx, realy });
                 }
+                var xerror = Math.Abs(centerlist[0][0] - centerlist[1][0]);
+                var yerror = Math.Abs(centerlist[0][1] - centerlist[1][1]);
+
+                string xyerror = string.Format("X Error : {0}  ,  Y Error : {1}", xerror.ToString() , yerror.ToString());
+                System.Drawing.Point textposXY = new System.Drawing.Point(centers[0].X - (int)(40 * RatioW), centers[0].Y - (int)(10  * RatioH));
+                CvInvoke.PutText(ClrImg, xyerror, textposXY, FontFace.HersheySimplex, RatioW / 2.0, new MCvScalar(53, 251, 32), thickness: (int)(2 * RatioW));
+
+
                 double errorDistance = CalcDistance(centerlist);
                 ClrImg = CenterDiffDraw(centers, ClrImg);
 
@@ -136,7 +146,7 @@ namespace CenterComparing
                     colorlist.Add(Innercolor);
                 }
             }
-
+            cntrlist = cntrlist.OrderBy( x => CvInvoke.ContourArea(x) ).ToList();
             return Tuple.Create(cntrlist, colorlist);
         }
 
