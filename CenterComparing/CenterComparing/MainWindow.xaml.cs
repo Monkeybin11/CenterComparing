@@ -82,11 +82,25 @@ namespace CenterComparing
                         Config cfg = null;
                         if ((bool)tglConfig.IsChecked)
                         {
-                            cfg = imgWindow.GetConfig(
-                           (double)nudPixelResolution.Value,
-                           (int)nudThreshold.Value,
-                           CoreMain.RatioW,
-                           CoreMain.RatioH);
+                            if ((bool)tglUseLine.IsChecked)
+                            {
+                                cfg = imgWindow.GetConfig(
+                         (double)nudPixelResolution.Value,
+                         (int)nudThreshold.Value,
+                         CoreMain.RatioW,
+                         CoreMain.RatioH,
+                         true);
+                            }
+                            else
+                            {
+                                cfg = imgWindow.GetConfig(
+                          (double)nudPixelResolution.Value,
+                          (int)nudThreshold.Value,
+                          CoreMain.RatioW,
+                          CoreMain.RatioH,
+                          false);
+                            }
+                           
                         }
                         else
                         {
@@ -131,7 +145,7 @@ namespace CenterComparing
                            (double)nudPixelResolution.Value,
                            (int)nudThreshold.Value,
                            CoreMain.RatioW,
-                           CoreMain.RatioH);
+                           CoreMain.RatioH , false);
                         }
                         else
                         {
@@ -157,7 +171,7 @@ namespace CenterComparing
                            (double)nudPixelResolution.Value,
                            (int)nudThreshold.Value,
                             CoreMain.RatioW,
-                           CoreMain.RatioH);
+                           CoreMain.RatioH,false);
                         break;
 
 
@@ -169,6 +183,11 @@ namespace CenterComparing
                         break;
 
                     case "btnMultiStart":
+                        if (tglUseLine.IsChecked == true)
+                        {
+                            MessageBox.Show("Using line config is not allowed for multi mode");
+
+                        }
                         Config tempconfg2 = null;
                         if ((bool)tglConfig.IsChecked)
                         {
@@ -176,7 +195,7 @@ namespace CenterComparing
                            (double)nudPixelResolution.Value,
                            (int)nudThreshold.Value,
                            CoreMain.RatioW,
-                           CoreMain.RatioH);
+                           CoreMain.RatioH,false);
                         }
                         else
                         {
@@ -217,5 +236,17 @@ namespace CenterComparing
             imgWindow?.SetMargin((int)nudMargin.Value);
         }
 
+        private void tglUseLine_IsCheckedChanged(object sender, EventArgs e)
+        {
+            if (imgWindow.UseLine == false)
+            { imgWindow.UseLine = true;
+                imgWindow.RemoveRect();
+            }
+            else
+            { imgWindow.UseLine = false;
+                imgWindow.RemoveLine();
+            }
+            
+        }
     }
 }

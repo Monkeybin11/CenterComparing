@@ -12,8 +12,21 @@ namespace CenterComparing
         public double OuterDw;
         public double InnerUp;
         public double InnerDw;
+
+        public double HX1;
+        public double HY1;
+        public double HX2;
+        public double HY2;
+
+        public double WX1;
+        public double WY1;
+        public double WX2;
+        public double WY2;
+
         public double Resolution;
         public int Threshold;
+
+        public bool UseLine;
     }
     
 }

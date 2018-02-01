@@ -80,8 +80,11 @@ namespace CenterComparing
                 {
                     CvInvoke.Circle(ClrImg, centers[i], 5, colorlist[i] );
                     CvInvoke.Circle(ClrImg, centers[i], (int)(5*RatioW), colorlist[i] , thickness:RatioW > 1 ? (int)RatioW : 1);
-                    var realx = (centers[i].X * RatioW * cfg.Resolution);
-                    var realy = (centers[i].Y * RatioH * cfg.Resolution);
+                    var realx = (centers[i].X * cfg.Resolution);
+                    var realy = (centers[i].Y * cfg.Resolution);
+
+                    realx.Print("Realx");
+                    realy.Print("Realy");
 
                     //var x = realx.ToString();
                     //var y = realy.ToString();
@@ -91,10 +94,39 @@ namespace CenterComparing
                  
                     centerlist.Add(new double[] { realx, realy });
                 }
-                var xerror = Math.Abs(centerlist[0][0] - centerlist[1][0]);
-                var yerror = Math.Abs(centerlist[0][1] - centerlist[1][1]);
 
-                string xyerror = string.Format("X Error : {0}  ,  Y Error : {1}", xerror.ToString() , yerror.ToString());
+
+                double xerror;
+                double yerror;
+                if (cfg.UseLine)
+                {
+                    var slope1 = (cfg.HY2 - cfg.HY1) / (cfg.HX2 - cfg.HX1);
+                    var bias1 = cfg.HY1 - slope1 * cfg.HX1;
+
+                    var slope2 = (cfg.WY2 - cfg.WY1) / (cfg.WX2 - cfg.WX1);
+                    var bias2 = cfg.WY1 - slope2 * cfg.WX1;
+
+                    var crossx = (bias2 - bias1) / (slope1 - slope2);
+                    var crossy =  slope1 * ((bias2 - bias1) / (slope1 - slope2)) + bias1;
+
+                    var posx = (int)(crossx * RatioW);
+                    var posy = (int)(crossy * RatioH);
+
+                    centers.Add( new System.Drawing.Point( posx,posy) ) ;
+
+                    var crossx_cvs = crossx * RatioW * cfg.Resolution;
+                    var crossy_cvs = crossy * RatioH * cfg.Resolution;
+                   
+                    centerlist.Add(new double[] { crossx_cvs, crossy_cvs });
+
+                    CvInvoke.Circle(ClrImg, centers.Last(), 5, colorlist.Last());
+                    CvInvoke.Circle(ClrImg, centers.Last(), (int)(5 * RatioW), colorlist.Last(), thickness: RatioW > 1 ? (int)RatioW : 1);
+                }
+               
+                xerror = Math.Abs(centerlist[0][0] - centerlist[1][0]);
+                yerror = Math.Abs(centerlist[0][1] - centerlist[1][1]);
+
+                string xyerror = string.Format("X Error : {0}  ,  Y Error : {1}", xerror.ToString("F4") , yerror.ToString("F4"));
                 System.Drawing.Point textposXY = new System.Drawing.Point(centers[0].X - (int)(40 * RatioW), centers[0].Y - (int)(10  * RatioH));
                 CvInvoke.PutText(ClrImg, xyerror, textposXY, FontFace.HersheySimplex, RatioW / 2.0, new MCvScalar(53, 251, 32), thickness: (int)(2 * RatioW));
 
@@ -127,9 +159,11 @@ namespace CenterComparing
             {
                 var area = CvInvoke.ContourArea(contours[i]);
 
+
                 // outer
-                if (area < cfg.OuterUp.ToCircleArea()
-                && area > cfg.OuterDw.ToCircleArea())
+                if (cfg.UseLine == false
+                    &&area < cfg.OuterUp.ToCircleArea()
+                    && area > cfg.OuterDw.ToCircleArea())
                 {
                     CvInvoke.DrawContours(ClrImg, contours, i, Outercolor, thickness: (int)(3*RatioW));
                     var cntr = contours[i];
@@ -163,7 +197,7 @@ namespace CenterComparing
             return dis;
         }
 
-        public ColorImg CenterDiffDraw(System.Drawing.Point[] points, ColorImg img)
+        public ColorImg CenterDiffDraw(List<System.Drawing.Point> points, ColorImg img)
         {
             var line = new LineSegment2D( points[0], points[1]);
 
@@ -173,15 +207,15 @@ namespace CenterComparing
         }
 
 
-        public System.Drawing.Point[] FindCenter(List<VectorOfPoint> contours)
+        public List<System.Drawing.Point> FindCenter(List<VectorOfPoint> contours)
         {
-            System.Drawing.Point[] centerpoins = new System.Drawing.Point[contours.Count];
+            List<System.Drawing.Point> centerpoins = new List<System.Drawing.Point>();
 
             for (int i = 0; i < contours.Count; i++)
             {
                 var moments = CvInvoke.Moments(contours[i], false);
-                centerpoins[i] = new System.Drawing.Point((int)(moments.M10 / moments.M00)
-                                            , (int)(moments.M01 / moments.M00));
+                centerpoins.Add( new System.Drawing.Point((int)(moments.M10 / moments.M00)
+                                            , (int)(moments.M01 / moments.M00)));
             }
 
             return centerpoins;

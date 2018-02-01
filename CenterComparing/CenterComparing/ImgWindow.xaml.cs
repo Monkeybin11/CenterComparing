@@ -25,19 +25,23 @@ namespace CenterComparing
         public event Action<string> evtDropFile;
         public event Action<int, int> evtImgWidthHeight;
         Point prePosition;
-        Rectangle OuterRect = null;
-        Rectangle OuterRect_in = null;
-        Rectangle InnerRect = null;
-        Rectangle InnerRect_in = null;
-        Ellipse InnerEllipse = null;
-        Ellipse OuterEllipse = null;
+        public Rectangle OuterRect = null;
+        public Rectangle OuterRect_in = null;
+        public Rectangle InnerRect = null;
+        public Rectangle InnerRect_in = null;
+        public Ellipse InnerEllipse = null;
+        public Ellipse OuterEllipse = null;
         BitmapImage OriginalImg;
 
-
+        public Line HLine = null;
+        public Line WLine = null;
+        public Label HLabel = null;
+        public Label WLabel = null;
 
         int Margin = 10;
 
-
+        public bool UseLine = false;
+        
 
         public ImgWindow()
         {
@@ -70,6 +74,14 @@ namespace CenterComparing
             cvsMain.Children.Remove(InnerRect_in);
         }
 
+        public void RemoveLine()
+        {
+            cvsMain.Children.Remove(HLine);
+            cvsMain.Children.Remove(WLine);
+            cvsMain.Children.Remove(HLabel);
+            cvsMain.Children.Remove(WLabel);
+        }
+
         public void SetMargin(int num)
         {
             Margin = num;
@@ -80,24 +92,48 @@ namespace CenterComparing
             ImgBack.Source = OriginalImg;
         }
 
-        public Config GetConfig(double resol , int thres , double wratio, double hratio)
+        public Config GetConfig(double resol , int thres , double wratio, double hratio ,bool useline)
         {
-            if (OuterRect != null
-                && OuterRect_in != null
+            if (useline
+                && WLine != null
+                && HLine != null
                 && InnerRect != null
                 && InnerRect_in != null)
             {
-               var output = new Config()
+                var output = new Config()
                 {
-                    OuterUp = Math.Max(OuterRect.Width*wratio, OuterRect.Height * hratio),
+                    HX1 = HLine.X1,
+                    HY1 = HLine.Y1,
+                    HX2 = HLine.X2,
+                    HY2 = HLine.Y2,
+                    WX1 = WLine.X1,
+                    WY1 = WLine.Y1,
+                    WX2 = WLine.X2,
+                    WY2 = WLine.Y2,
+                    InnerUp = Math.Max(InnerRect.Width * wratio, InnerRect.Height * hratio),
+                    InnerDw = Math.Min(InnerRect_in.Width * wratio, InnerRect_in.Height * hratio) - 5,
+                    Resolution = resol,
+                    Threshold = thres,
+                    UseLine = true
+                };
+                return output;
+            }
+            else if (OuterRect != null
+                     && OuterRect_in != null
+                     && InnerRect != null
+                     && InnerRect_in != null)
+            {
+                var output = new Config()
+                {
+                    OuterUp = Math.Max(OuterRect.Width * wratio, OuterRect.Height * hratio),
                     OuterDw = Math.Min(OuterRect_in.Width * wratio, OuterRect_in.Height * hratio) - 5,
                     InnerUp = Math.Max(InnerRect.Width * wratio, InnerRect.Height * hratio),
                     InnerDw = Math.Min(InnerRect_in.Width * wratio, InnerRect_in.Height * hratio) - 5,
                     Resolution = resol,
-                    Threshold = thres
+                    Threshold = thres,
+                    UseLine = false
                 };
                 return output;
-
             }
             return null;
         }
@@ -106,23 +142,55 @@ namespace CenterComparing
         {
             prePosition = e.GetPosition(cvsMain);
             cvsMain.CaptureMouse();
+            if (UseLine)
+            {
+                //Inner
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    if (HLine == null)
+                    {
+                        cvsMain.Children.Remove(WLabel);
+                        CreateLine(true);
+                        CreateLineText(true);
+                    }
 
-            //Inner
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                if (InnerRect == null)
-                {
-                    //InnerEllipse = CreateCircle(prePosition.X, prePosition.Y, false);
-                    CreatRectangle(prePosition.X, prePosition.Y , false);
                 }
-                   
-            }
-            else if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) // Outer
-            {
-                if (OuterRect == null)
+                else if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) // Outer
                 {
-                    //OuterEllipse = CreateCircle(prePosition.X, prePosition.Y, true);
-                    CreatRectangle(prePosition.X, prePosition.Y, true);
+                    if (WLine == null)
+                    {
+                        cvsMain.Children.Remove(HLabel);
+                        CreateLine(false);
+                        CreateLineText(false);
+                    }
+                }
+                else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    if (InnerRect == null)
+                    {
+                        CreatRectangle(prePosition.X, prePosition.Y, false);
+                    }
+
+                }
+            }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    if (InnerRect == null)
+                    {
+                        //InnerEllipse = CreateCircle(prePosition.X, prePosition.Y, false);
+                        CreatRectangle(prePosition.X, prePosition.Y, false);
+                    }
+
+                }
+                else if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) // Outer
+                {
+                    if (OuterRect == null)
+                    {
+                        //OuterEllipse = CreateCircle(prePosition.X, prePosition.Y, true);
+                        CreatRectangle(prePosition.X, prePosition.Y, true);
+                    }
                 }
             }
         }
@@ -143,69 +211,122 @@ namespace CenterComparing
                     left = posnow.X;
 
                 var dis = Distance(prePosition.X, posnow.X, prePosition.Y, posnow.Y);
-
-                if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                if (!UseLine)
                 {
-                    if (InnerRect != null)
+                    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                     {
-                        //cvsMain.Children.Remove(InnerEllipse);
-                        //InnerEllipse.Width = dis;
-                        //InnerEllipse.Height = dis;
-                        //Canvas.SetLeft(InnerEllipse, left);
-                        //Canvas.SetTop(InnerEllipse, top);
-                        //cvsMain.Children.Add(InnerEllipse);
+                        if (InnerRect != null)
+                        {
+                            cvsMain.Children.Remove(InnerRect);
 
-                        cvsMain.Children.Remove(InnerRect);
+                            InnerRect.Width = Math.Abs(prePosition.X - posnow.X);
+                            InnerRect.Height = Math.Abs(prePosition.Y - posnow.Y);
+                            Canvas.SetLeft(InnerRect, left);
+                            Canvas.SetTop(InnerRect, top);
+                            cvsMain.Children.Add(InnerRect);
 
-                        InnerRect.Width = Math.Abs(prePosition.X - posnow.X);
-                        InnerRect.Height = Math.Abs(prePosition.Y - posnow.Y);
-                        Canvas.SetLeft(InnerRect, left);
-                        Canvas.SetTop(InnerRect, top);
-                        cvsMain.Children.Add(InnerRect);
+                            var innermargin = Margin / 2;
 
-                        var innermargin = Margin / 2;
+                            cvsMain.Children.Remove(InnerRect_in);
+                            var w = Math.Abs(prePosition.X - posnow.X) - innermargin * 2;
+                            var h = Math.Abs(prePosition.Y - posnow.Y) - innermargin * 2;
+                            InnerRect_in.Width = w <= innermargin * 2 ? 0 : w;
+                            InnerRect_in.Height = h <= innermargin * 2 ? 0 : h;
+                            Canvas.SetLeft(InnerRect_in, left + innermargin);
+                            Canvas.SetTop(InnerRect_in, top + innermargin);
+                            cvsMain.Children.Add(InnerRect_in);
 
-                        cvsMain.Children.Remove(InnerRect_in);
-                        var w = Math.Abs(prePosition.X - posnow.X) - innermargin * 2;
-                        var h = Math.Abs(prePosition.Y - posnow.Y) - innermargin * 2;
-                        InnerRect_in.Width  = w <= innermargin * 2 ? 0 : w;
-                        InnerRect_in.Height = h <= innermargin * 2 ? 0 : h;
-                        Canvas.SetLeft(InnerRect_in, left + innermargin);
-                        Canvas.SetTop(InnerRect_in, top + innermargin);
-                        cvsMain.Children.Add(InnerRect_in);
+                        }
+                    }
+                    else if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) // Outer
+                    {
+                        if (OuterRect != null)
+                        {
+                            cvsMain.Children.Remove(OuterRect);
+                            OuterRect.Width = Math.Abs(prePosition.X - posnow.X);
+                            OuterRect.Height = Math.Abs(prePosition.Y - posnow.Y);
+                            Canvas.SetLeft(OuterRect, left);
+                            Canvas.SetTop(OuterRect, top);
+                            cvsMain.Children.Add(OuterRect);
 
+                            cvsMain.Children.Remove(OuterRect_in);
+                            var w = Math.Abs(prePosition.X - posnow.X) - Margin * 2;
+                            var h = Math.Abs(prePosition.Y - posnow.Y) - Margin * 2;
+                            OuterRect_in.Width = w <= Margin * 2 ? 0 : w;
+                            OuterRect_in.Height = h <= Margin * 2 ? 0 : h;
+                            Canvas.SetLeft(OuterRect_in, left + Margin);
+                            Canvas.SetTop(OuterRect_in, top + Margin);
+                            cvsMain.Children.Add(OuterRect_in);
+                        }
                     }
                 }
-                else if(Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) // Outer
+                else
                 {
-                    if (OuterRect != null)
+                    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                     {
-                        //cvsMain.Children.Remove(OuterEllipse);
-                        //OuterEllipse.Width = dis;
-                        //OuterEllipse.Height = dis;
-                        //Canvas.SetLeft(OuterEllipse, left);
-                        //Canvas.SetTop(OuterEllipse, top);
-                        //cvsMain.Children.Add(OuterEllipse);
+                        if (HLine != null)
+                        {
+                            cvsMain.Children.Remove(HLine);
 
-                        cvsMain.Children.Remove(OuterRect);
-                        OuterRect.Width = Math.Abs(prePosition.X - posnow.X);
-                        OuterRect.Height = Math.Abs(prePosition.Y - posnow.Y);
-                        Canvas.SetLeft(OuterRect, left);
-                        Canvas.SetTop(OuterRect, top);
-                        cvsMain.Children.Add(OuterRect);
+                            HLine.X1 = Math.Abs(prePosition.X);
+                            HLine.Y1 = Math.Abs(prePosition.Y);
+                            HLine.X2 = Math.Abs(posnow.X);
+                            HLine.Y2 = Math.Abs(posnow.Y);
+                            cvsMain.Children.Add(HLine);
 
-                        cvsMain.Children.Remove(OuterRect_in);
-                        var w = Math.Abs(prePosition.X - posnow.X) - Margin * 2;
-                        var h = Math.Abs(prePosition.Y - posnow.Y) - Margin * 2;
-                        OuterRect_in.Width  = w <= Margin * 2 ? 0 : w;
-                        OuterRect_in.Height = h <= Margin * 2 ? 0 : h;
-                        Canvas.SetLeft(OuterRect_in, left + Margin);
-                        Canvas.SetTop(OuterRect_in, top + Margin);
-                        cvsMain.Children.Add(OuterRect_in);
+                            cvsMain.Children.Remove(HLabel);
+                            Canvas.SetLeft(HLabel, posnow.X + 6);
+                            Canvas.SetTop(HLabel, posnow.Y );
+                            cvsMain.Children.Add(HLabel);
+                        }
                     }
-                    
-                       
+                    else if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) // Outer
+                    {
+                        if (WLine != null)
+                        {
+                            cvsMain.Children.Remove(WLine);
+                            WLine.X1 = Math.Abs(prePosition.X);
+                            WLine.Y1 = Math.Abs(prePosition.Y);
+                            WLine.X2 = Math.Abs(posnow.X);
+                            WLine.Y2 = Math.Abs(posnow.Y);
+                            cvsMain.Children.Add(WLine);
+
+                            cvsMain.Children.Remove(WLabel);
+                            Canvas.SetLeft(WLabel, posnow.X + 6);
+                            Canvas.SetTop(WLabel, posnow.Y );
+                            cvsMain.Children.Add(WLabel);
+
+                        }
+                    }
+                    else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        if (InnerRect != null)
+                        {
+                            cvsMain.Children.Remove(InnerRect);
+
+                            InnerRect.Width = Math.Abs(prePosition.X - posnow.X);
+                            InnerRect.Height = Math.Abs(prePosition.Y - posnow.Y);
+                            Canvas.SetLeft(InnerRect, left);
+                            Canvas.SetTop(InnerRect, top);
+                            cvsMain.Children.Add(InnerRect);
+
+                            var innermargin = Margin / 2;
+
+                            cvsMain.Children.Remove(InnerRect_in);
+                            var w = Math.Abs(prePosition.X - posnow.X) - innermargin * 2;
+                            var h = Math.Abs(prePosition.Y - posnow.Y) - innermargin * 2;
+                            InnerRect_in.Width = w <= innermargin * 2 ? 0 : w;
+                            InnerRect_in.Height = h <= innermargin * 2 ? 0 : h;
+                            Canvas.SetLeft(InnerRect_in, left + innermargin);
+                            Canvas.SetTop(InnerRect_in, top + innermargin);
+                            cvsMain.Children.Add(InnerRect_in);
+
+                        }
+                    }
+
                 }
+
+              
             }
         }
 
@@ -215,6 +336,10 @@ namespace CenterComparing
             cvsMain.ReleaseMouseCapture();
             //SetRecrangleProperty();
             //currentRect = null;
+
+            //cvsMain.Children.Remove(WLine);
+            //cvsMain.Children.Remove(HLine);
+
         }
 
         void SetRecrangleProperty()
@@ -225,6 +350,54 @@ namespace CenterComparing
             OuterRect.Stroke = new SolidColorBrush(Colors.IndianRed);
         }
 
+        void CreateLine(bool isHorizontal)
+        {
+            if (isHorizontal)
+            {
+                HLine = new Line();
+                HLine.StrokeThickness = 3;
+                HLine.Stroke = new SolidColorBrush(Colors.MediumPurple);
+                HLine.Opacity = 0.7;
+                DoubleCollection dashSize = new DoubleCollection();
+                dashSize.Add(1);
+                dashSize.Add(1);
+                HLine.StrokeDashArray = dashSize;
+                HLine.StrokeDashOffset = 0;
+            }
+            else
+            {
+                WLine = new Line();
+                WLine.StrokeThickness = 3;
+                WLine.Stroke = new SolidColorBrush(Colors.Orange);
+                WLine.Opacity = 0.7;
+                DoubleCollection dashSize = new DoubleCollection();
+                dashSize.Add(1);
+                dashSize.Add(1);
+                WLine.StrokeDashArray = dashSize;
+                WLine.StrokeDashOffset = 0;
+            }
+          
+
+        }
+
+        void CreateLineText(bool isHorizontal)
+        {
+            if (isHorizontal)
+            {
+                HLabel = new Label();
+                HLabel.FontWeight = FontWeights.Bold;
+                HLabel.Content = "Vertical";
+                HLabel.Foreground = Brushes.Green;
+
+            }
+            else
+            {
+                WLabel = new Label();
+                WLabel.FontWeight = FontWeights.Bold;
+                WLabel.Content = "Horizontal";
+                WLabel.Foreground = Brushes.Green;
+            }
+        }
         Ellipse CreateCircle(double l, double t, bool isouter)
         {
             Ellipse output = new Ellipse();

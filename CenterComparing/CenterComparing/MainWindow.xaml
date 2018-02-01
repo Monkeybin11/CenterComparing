@@ -42,6 +42,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Button x:Name="btnLoadImg"   Grid.Row="0" Grid.Column="0" Content="Load Image"    Style="{DynamicResource SquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
                     <Button x:Name="btnStart" Grid.Row="0" Grid.Column="1" Content="Start" Style="{StaticResource AccentedSquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
@@ -53,26 +55,31 @@
                     <Button x:Name="btnExportConfig" Grid.Row="2" Grid.Column="1" Content="Export Config" Style="{DynamicResource SquareButtonStyle}"  Margin="5,10,5,10" Click="Btn_Function_Click"/>
 
 
-                    <Controls:ToggleSwitch x:Name="tglConfig" Header="Use Mouse Drag Config" OnLabel="Yes" OffLabel="No" Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="2" IsChecked="True" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="10" AutomationProperties.IsRowHeader="True" />
+                    <Controls:ToggleSwitch x:Name="tglConfig" Header="Mouse Drag Mode" OnLabel="Yes" OffLabel="No" Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="2" IsChecked="True" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,15,0,0" FontSize="10" AutomationProperties.IsColumnHeader="True" />
+                    <Controls:ToggleSwitch x:Name="tglUseLine" Header="Line Mode" IsChecked="False" OnLabel="Yes" OffLabel="No" Grid.Row="4" Grid.RowSpan="2" Grid.ColumnSpan="2"  HorizontalAlignment="Left" VerticalAlignment="Center"   Margin="25,0,0,0" FontSize="10" AutomationProperties.IsRowHeader="True" IsCheckedChanged="tglUseLine_IsCheckedChanged" />
 
-                    <Button x:Name="btnApplyMouseConfig" Grid.Row="5" Grid.ColumnSpan="2" Content="Apply Mouse Config" Style="{DynamicResource SquareButtonStyle}"  Margin="5,10,5,10" Click="Btn_Function_Click"/>
-
-
-                    <Label Content=" Pixel Resolution (um) : " Grid.Row="6" Style="{StaticResource LblSide}"/>
-                    <Controls:NumericUpDown x:Name="nudPixelResolution" Value="2" Margin="2,13,2,13" Maximum="10000" Minimum="0.01" Grid.Row="6" Grid.Column="1" />
-
-                    <Label Content="Circle Margin (pixel) : " Grid.Row="7" Style="{StaticResource LblSide}"/>
-                    <Controls:NumericUpDown x:Name="nudMargin" Value="40" Margin="2,13,2,13" Maximum="100" Minimum="10" Grid.Row="7" Grid.Column="1" ValueChanged="nudMargin_ValueChanged"/>
+                    <Button x:Name="btnApplyMouseConfig" Grid.Row="6" Grid.ColumnSpan="2" Content="Apply Mouse Config" Style="{DynamicResource SquareButtonStyle}"  Margin="5,10,5,10" Click="Btn_Function_Click"/>
 
 
-                    <Label Content="Threshold : " Grid.Row="8" Style="{StaticResource LblSide}"/>
-                    <Controls:NumericUpDown x:Name="nudThreshold" Value="50" Margin="2,13,2,13" Maximum="100" Minimum="10" Grid.Row="8" Grid.Column="1" />
+                    <Label Content=" Pixel Resolution (um) : " Grid.Row="7" Style="{StaticResource LblSide}"/>
+                    <Controls:NumericUpDown x:Name="nudPixelResolution" Value="2" Margin="2,13,2,13" Maximum="10000" Minimum="0.01" Grid.Row="7" Grid.Column="1" />
 
-                    <Label Content="Distance (um) :"  Grid.Row="9" Style="{StaticResource LblSide}" FontSize="14" FontWeight="Bold"/>
-                    <TextBox x:Name="txbDis" Grid.Row="9" Grid.Column="1" Margin="5,15,5,15" TextAlignment="Right" />
+                    <Label Content="Circle Margin (pixel) : " Grid.Row="8" Style="{StaticResource LblSide}"/>
+                    <Controls:NumericUpDown x:Name="nudMargin" Value="40" Margin="2,13,2,13" Maximum="100" Minimum="10" Grid.Row="8" Grid.Column="1" ValueChanged="nudMargin_ValueChanged"/>
 
-                    <Label Content="* Mouse Drag  + Alt set outer circle" Grid.Row="10" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
-                    <Label Content="* Mouse Drag + Ctrl set inner circle" Grid.Row="11" Grid.ColumnSpan="2" Margin="5"/>
+
+                    <Label Content="Threshold : " Grid.Row="9" Style="{StaticResource LblSide}"/>
+                    <Controls:NumericUpDown x:Name="nudThreshold" Value="50" Margin="2,13,2,13" Maximum="100" Minimum="10" Grid.Row="9" Grid.Column="1" />
+
+                    <Label Content="Distance (um) :"  Grid.Row="10" Style="{StaticResource LblSide}" FontSize="14" FontWeight="Bold"/>
+                    <TextBox x:Name="txbDis" Grid.Row="10" Grid.Column="1" Margin="5,15,5,15" TextAlignment="Right" />
+                    <Label Content="** Mouse drag + Ctrl set vertical line" Grid.Row="11" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5,-5,5,5"/>
+                    <Label Content="* Mouse drag  + Alt set outer rectangle" Grid.Row="11" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+                    <Label Content="* Mouse drag + Ctrl set inner rectangle" Grid.Row="11" Grid.ColumnSpan="2" Margin="5"/>
+                    <Label Content="** Mouse drag + Ctrl set vertical line" Grid.Row="12" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5,-5,5,5"/>
+                    <Label Content="** Mouse drag  + Alt set horizontal line" Grid.Row="12" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+                    <Label Content="** Mouse drag + Ctrl set vertical line" Grid.Row="13" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5,-5,5,5"/>
+                    <Label Content="** Mouse drag + Shift set inner rectangle" Grid.Row="13" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
 
 
                 </Grid>
@@ -94,12 +101,14 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
                     <Button x:Name="btnLoadMultiImg"   Grid.Row="0" Grid.Column="0" Content="Load Image"    Style="{DynamicResource SquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
                     <Button x:Name="btnMultiStart" Grid.Row="0" Grid.Column="1" Content="Start" Style="{StaticResource AccentedSquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
 
-                    <DataGrid x:Name="dtgMain" ItemsSource="{Binding People}" Margin="10,20,10,0" Grid.Row="1" Grid.RowSpan="10" Grid.ColumnSpan="2" Style="{StaticResource AzureDataGrid}" AutoGenerateColumns="False">
+                    <DataGrid x:Name="dtgMain" ItemsSource="{Binding People}" Margin="10,20,10,0" Grid.Row="1" Grid.RowSpan="12" Grid.ColumnSpan="2" Style="{StaticResource AzureDataGrid}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="No." Width="*" Binding="{Binding no}"/>
                             <DataGridTextColumn Header="Name" Width="2*" Binding="{Binding name}"/>
