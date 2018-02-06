@@ -73,10 +73,8 @@
 
                     <Label Content="Distance (um) :"  Grid.Row="10" Style="{StaticResource LblSide}" FontSize="14" FontWeight="Bold"/>
                     <TextBox x:Name="txbDis" Grid.Row="10" Grid.Column="1" Margin="5,15,5,15" TextAlignment="Right" />
-                    <Label Content="** Mouse drag + Ctrl set vertical line" Grid.Row="11" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5,-5,5,5"/>
                     <Label Content="* Mouse drag  + Alt set outer rectangle" Grid.Row="11" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
                     <Label Content="* Mouse drag + Ctrl set inner rectangle" Grid.Row="11" Grid.ColumnSpan="2" Margin="5"/>
-                    <Label Content="** Mouse drag + Ctrl set vertical line" Grid.Row="12" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5,-5,5,5"/>
                     <Label Content="** Mouse drag  + Alt set horizontal line" Grid.Row="12" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
                     <Label Content="** Mouse drag + Ctrl set vertical line" Grid.Row="13" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5,-5,5,5"/>
                     <Label Content="** Mouse drag + Shift set inner rectangle" Grid.Row="13" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>

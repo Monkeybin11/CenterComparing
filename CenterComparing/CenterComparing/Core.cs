@@ -82,15 +82,6 @@ namespace CenterComparing
                     CvInvoke.Circle(ClrImg, centers[i], (int)(5*RatioW), colorlist[i] , thickness:RatioW > 1 ? (int)RatioW : 1);
                     var realx = (centers[i].X * cfg.Resolution);
                     var realy = (centers[i].Y * cfg.Resolution);
-
-                    realx.Print("Realx");
-                    realy.Print("Realy");
-
-                    //var x = realx.ToString();
-                    //var y = realy.ToString();
-                    //string xy = x + " , " + y + " (um)";
-
-                  
                  
                     centerlist.Add(new double[] { realx, realy });
                 }
