@@ -149,11 +149,12 @@ namespace CenterComparing
             for (int i = 0; i < contours.Size; i++)
             {
                 var area = CvInvoke.ContourArea(contours[i]);
-
-
+                CvInvoke.DrawContours(tempimg, contours, i, Outercolor, thickness: (int)(3 * RatioW));
+                var temp = contours[i];
                 // outer
                 if (cfg.UseLine == false
-                    &&area < cfg.OuterUp.ToCircleArea()
+                    && CheckInBox(cfg, contours[i])
+                    && area < cfg.OuterUp.ToCircleArea()
                     && area > cfg.OuterDw.ToCircleArea())
                 {
                     CvInvoke.DrawContours(ClrImg, contours, i, Outercolor, thickness: (int)(3*RatioW));
@@ -163,7 +164,8 @@ namespace CenterComparing
                 }
 
                 if (area < cfg.InnerUp.ToCircleArea()
-                   && area > cfg.InnerDw.ToCircleArea())
+                   && area > cfg.InnerDw.ToCircleArea()
+                    && CheckInBox(cfg, contours[i]))
                 {
                     CvInvoke.DrawContours(ClrImg, contours, i, Innercolor, thickness: (int)(3 * RatioW));                                                  
                     var cntr = contours[i];
@@ -171,8 +173,29 @@ namespace CenterComparing
                     colorlist.Add(Innercolor);
                 }
             }
+
+            tempimg.Save(@"F:\제작프로그램\비손메디칼_윤동국\badImage\test.png");
+
             cntrlist = cntrlist.OrderBy( x => CvInvoke.ContourArea(x) ).ToList();
             return Tuple.Create(cntrlist, colorlist);
+        }
+
+        public bool CheckInBox(Config cfg, VectorOfPoint cntr)
+        {
+            var minrect = CvInvoke.BoundingRectangle(cntr);
+            var ltx = minrect.X;
+            var lty = minrect.Y;
+            var rbx = minrect.X + minrect.Width;
+            var rby = minrect.Y + minrect.Height;
+
+            if (
+                ltx > cfg.BoxInnerLT.X*(RatioW-0.3) &&
+                lty > cfg.BoxInnerLT.Y*(RatioH-0.3) &&
+                rbx < cfg.BoxInnerRB.X*(RatioW+0.3) &&
+                rby < cfg.BoxInnerRB.Y*(RatioH+0.3)
+                )
+            { return true; }
+            return false;
         }
 
         public double CalcDistance(List<double[]> list)

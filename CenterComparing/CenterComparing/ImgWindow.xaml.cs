@@ -25,6 +25,8 @@ namespace CenterComparing
         public event Action<string> evtDropFile;
         public event Action<int, int> evtImgWidthHeight;
         Point prePosition;
+        Point InnerRectFirstPos;
+        Point InnerRectLastPos;
         public Rectangle OuterRect = null;
         public Rectangle OuterRect_in = null;
         public Rectangle InnerRect = null;
@@ -100,8 +102,13 @@ namespace CenterComparing
                 && InnerRect != null
                 && InnerRect_in != null)
             {
+                var ltpos = new System.Drawing.Point((int)Math.Min(InnerRectFirstPos.X, InnerRectLastPos.X), (int)Math.Min(InnerRectFirstPos.Y, InnerRectLastPos.Y));
+                var rbpos = new System.Drawing.Point((int)Math.Max(InnerRectFirstPos.X, InnerRectLastPos.X), (int)Math.Max(InnerRectFirstPos.Y, InnerRectLastPos.Y));
+
                 var output = new Config()
                 {
+                    BoxInnerLT = ltpos,
+                    BoxInnerRB = rbpos,
                     HX1 = HLine.X1,
                     HY1 = HLine.Y1,
                     HX2 = HLine.X2,
@@ -169,6 +176,7 @@ namespace CenterComparing
                     if (InnerRect == null)
                     {
                         CreatRectangle(prePosition.X, prePosition.Y, false);
+                        InnerRectFirstPos = e.GetPosition(cvsMain);
                     }
 
                 }
@@ -181,6 +189,7 @@ namespace CenterComparing
                     {
                         //InnerEllipse = CreateCircle(prePosition.X, prePosition.Y, false);
                         CreatRectangle(prePosition.X, prePosition.Y, false);
+                        InnerRectFirstPos = e.GetPosition(cvsMain);
                     }
 
                 }
@@ -235,6 +244,8 @@ namespace CenterComparing
                             Canvas.SetLeft(InnerRect_in, left + innermargin);
                             Canvas.SetTop(InnerRect_in, top + innermargin);
                             cvsMain.Children.Add(InnerRect_in);
+
+                            InnerRectLastPos = posnow;
 
                         }
                     }
@@ -320,7 +331,7 @@ namespace CenterComparing
                             Canvas.SetLeft(InnerRect_in, left + innermargin);
                             Canvas.SetTop(InnerRect_in, top + innermargin);
                             cvsMain.Children.Add(InnerRect_in);
-
+                            InnerRectLastPos = posnow;
                         }
                     }
 
