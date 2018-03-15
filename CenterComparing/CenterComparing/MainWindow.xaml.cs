@@ -212,6 +212,7 @@ namespace CenterComparing
             }
             catch (Exception er)
             {
+				Console.WriteLine(er.ToString());
                 System.Windows.MessageBox.Show("Some Error occur. please contact developer.Error Log will be saved. please choose log save path [Error Number 101 ] ");
                 var ofd = new System.Windows.Forms.SaveFileDialog();
                 ofd.Filter = "Text Files (*.txt|*.txt";

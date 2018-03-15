@@ -174,7 +174,7 @@ namespace CenterComparing
                 }
             }
 
-            tempimg.Save(@"F:\제작프로그램\비손메디칼_윤동국\badImage\test.png");
+            //tempimg.Save(@"F:\제작프로그램\비손메디칼_윤동국\badImage\test.png");
 
             cntrlist = cntrlist.OrderBy( x => CvInvoke.ContourArea(x) ).ToList();
             return Tuple.Create(cntrlist, colorlist);
@@ -266,8 +266,8 @@ namespace CenterComparing
                 ofd.Filter = "Image Files (*.bmp,*.png,*.jpg,*.jpeg) | *.bmp;*.png;*.jpg;*.jpeg";
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                res = Task<string>.Run(() =>
-                {
+                //res = Task<string>.Run(() =>
+                //{
                     var tempimg = new Img(ofd.FileName);
 
                     RatioW = tempimg.Width / 800.0;
@@ -276,7 +276,7 @@ namespace CenterComparing
                     BaseImg = tempimg;//.Resize(800, 600, Inter.Area);
                     ClrOriginalImg = new ColorImg(ofd.FileName);//.Resize(800, 600, Inter.Area);
                     return ofd.FileName;
-                }).Result;
+                //}).Result;
             }
             else res = "NG";
           
