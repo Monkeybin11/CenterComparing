@@ -40,15 +40,19 @@ namespace CenterComparing
 
             CoreMain.evtProcessedImg += x => imgWindow.SetImage(x);
             CoreMain.evtProcessedImg += x => imgWindow.RemoveRect();
-            CoreMain.evtDistance += x =>
+            CoreMain.evtDistance += (x,y,d) =>
             {
-                if (x == double.MaxValue)
+                if (d == double.MaxValue)
                 {
                     this.Dispatcher.BeginInvoke((Action)(() => txbDis.Text = "Fail"));
-                }
+					this.Dispatcher.BeginInvoke( (Action)( () => txbXerr.Text = "Fail" ) );
+					this.Dispatcher.BeginInvoke( (Action)( () => txbyerr.Text = "Fail" ) );
+				}
                 else
                 {
-                    this.Dispatcher.BeginInvoke((Action)(() => txbDis.Text = x.ToString("F4")));
+                    this.Dispatcher.BeginInvoke((Action)(() => txbXerr.Text = x.ToString("F4")));
+                    this.Dispatcher.BeginInvoke((Action)(() => txbyerr.Text = y.ToString("F4")));
+                    this.Dispatcher.BeginInvoke((Action)(() => txbDis.Text = d.ToString("F4")));
                 }
             };
             CoreMain.evtNumError += (num,err) => UpdateMultiStatus(num, err);

@@ -93,8 +93,8 @@
     <Reference Include="MahApps.Metro.SimpleChildWindow, Version=1.4.1.6, Culture=neutral, PublicKeyToken=bbbfdff7f500a992, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.SimpleChildWindow.1.4.1\lib\net45\MahApps.Metro.SimpleChildWindow.dll</HintPath>
     </Reference>
-    <Reference Include="SpeedyCoding">
-      <HintPath>DLL\sp86\SpeedyCoding.dll</HintPath>
+    <Reference Include="SpeedyCoding, Version=2.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\SpeedyCoding.2.1.2\lib\net462\SpeedyCoding.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -127,6 +127,7 @@
     </ApplicationDefinition>
     <Compile Include="Config.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="ExtensionFunction.cs" />
     <Compile Include="MultiAnalysisDatacs.cs" />
     <Compile Include="TopMenu.xaml.cs">
       <DependentUpon>TopMenu.xaml</DependentUpon>
@@ -207,6 +208,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="centercomparing_icon1_F7v_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TodoList.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

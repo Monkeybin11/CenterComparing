@@ -24,7 +24,7 @@ namespace CenterComparing
     public class Core
     {
         public event Action<BitmapSource> evtProcessedImg;
-        public event Action<double> evtDistance;
+        public event Action<double,double,double> evtDistance; // x , y , distance
         public event Action evtMultiStart;
         public event Action evtMultiEnd;
         Img BaseImg;
@@ -114,10 +114,11 @@ namespace CenterComparing
                     CvInvoke.Circle(ClrImg, centers.Last(), (int)(5 * RatioW), colorlist.Last(), thickness: RatioW > 1 ? (int)RatioW : 1);
                 }
                
-                xerror = Math.Abs(centerlist[0][0] - centerlist[1][0]);
-                yerror = Math.Abs(centerlist[0][1] - centerlist[1][1]);
+                xerror = centerlist[0][0] - centerlist[1][0];
+                yerror = centerlist[0][1] - centerlist[1][1];
 
                 string xyerror = string.Format("X Error : {0}  ,  Y Error : {1}", xerror.ToString("F4") , yerror.ToString("F4"));
+                //System.Drawing.Point textposXY = new System.Drawing.Point(centers[0].X - (int)(40 * RatioW), centers[0].Y - (int)(10  * RatioH));
                 System.Drawing.Point textposXY = new System.Drawing.Point(centers[0].X - (int)(40 * RatioW), centers[0].Y - (int)(10  * RatioH));
                 CvInvoke.PutText(ClrImg, xyerror, textposXY, FontFace.HersheySimplex, RatioW / 2.0, new MCvScalar(53, 251, 32), thickness: (int)(2 * RatioW));
 
@@ -125,12 +126,13 @@ namespace CenterComparing
                 double errorDistance = CalcDistance(centerlist);
                 ClrImg = CenterDiffDraw(centers, ClrImg);
 
+                //System.Drawing.Point textdifpos = new System.Drawing.Point(centers[0].X + (int)(40*RatioW) , centers[0].Y + (int)(10*RatioH) );
                 System.Drawing.Point textdifpos = new System.Drawing.Point(centers[0].X + (int)(40*RatioW) , centers[0].Y + (int)(10*RatioH) );
                 CvInvoke.PutText(ClrImg, "Error : "+ errorDistance.ToString("F4") + " (um)", textdifpos, FontFace.HersheySimplex, RatioW/2.0, new MCvScalar(153, 51, 153) , thickness:(int)(2*RatioW));
 
                 var res = ToBitmapSource(ClrImg);
                 evtProcessedImg(res);
-                evtDistance(errorDistance);
+                evtDistance( xerror , yerror ,errorDistance );
             }
             catch (Exception er)
             {
@@ -208,6 +210,9 @@ namespace CenterComparing
             var xerror = Math.Pow((f[0] - l[0]), 2);
             var yerror = Math.Pow((f[1] - l[1]), 2);
             var dis = Math.Sqrt(xerror + yerror);
+
+
+
             return dis;
         }
 
@@ -334,10 +339,11 @@ namespace CenterComparing
             return null;
         }
 
-        // 각 이미지마다 해상도에 맞춰서 프로세싱 하자. 
+       
         public async void StartMultiProcessing(List<MultiAnalysisDatacs> srclist , Config cfg)
         {
-            if (cfg == null) System.Windows.MessageBox.Show(" Please Set Config First. ");
+			// 각 이미지마다 해상도에 맞춰서 프로세싱 하자. 
+			if (cfg == null) System.Windows.MessageBox.Show(" Please Set Config First. ");
 
             if (srclist.Count < 1) return;
 

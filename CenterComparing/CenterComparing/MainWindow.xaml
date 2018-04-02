@@ -44,6 +44,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Button x:Name="btnLoadImg"   Grid.Row="0" Grid.Column="0" Content="Load Image"    Style="{DynamicResource SquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
                     <Button x:Name="btnStart" Grid.Row="0" Grid.Column="1" Content="Start" Style="{StaticResource AccentedSquareButtonStyle}" Margin="5,10,5,10" Click="Btn_Function_Click"/>
@@ -70,14 +71,19 @@
 
                     <Label Content="Threshold : " Grid.Row="8" Style="{StaticResource LblSide}"/>
                     <Controls:NumericUpDown x:Name="nudThreshold" Value="50" Margin="2,13,2,13" Maximum="100" Minimum="1" Grid.Row="8" Grid.Column="1" />
-
-                    <Label Content="Distance (um) :"  Grid.Row="9" Style="{StaticResource LblSide}" FontSize="14" FontWeight="Bold"/>
-                    <TextBox x:Name="txbDis" Grid.Row="9" Grid.Column="1" Margin="5,15,5,15" TextAlignment="Right" />
-                    <Label Content="* Mouse drag  + Alt set outer rectangle"   Grid.Row="11" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
-                    <Label Content="* Mouse drag + Ctrl set inner rectangle"   Grid.Row="11" Grid.ColumnSpan="2" Margin="5"/>
-                    <Label Content="** Mouse drag  + Alt set horizontal line"  Grid.Row="12" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
-                    <Label Content="** Mouse drag + Ctrl set vertical line"    Grid.Row="13" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5,-5,5,5"/>
-                    <Label Content="** Mouse drag + Shift set inner rectangle" Grid.Row="13" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+					<Label Content="X Error (um) :"  Grid.Row="9" Style="{StaticResource LblSide}" FontSize="14" FontWeight="Bold"/>
+					<TextBox x:Name="txbXerr" Grid.Row="9" Grid.Column="1" Margin="5,15,5,15" TextAlignment="Right" />
+					<Label Content="Y Error (um) :"  Grid.Row="10" Style="{StaticResource LblSide}" FontSize="14" FontWeight="Bold"/>
+					<TextBox x:Name="txbyerr" Grid.Row="10" Grid.Column="1" Margin="5,15,5,15" TextAlignment="Right" />
+					<Label Content="Distance (um) :"  Grid.Row="11" Style="{StaticResource LblSide}" FontSize="14" FontWeight="Bold"/>
+                    <TextBox x:Name="txbDis" Grid.Row="11" Grid.Column="1" Margin="5,15,5,15" TextAlignment="Right" />
+					
+					
+                    <Label Content="* Mouse drag  + Alt set outer rectangle"   Grid.Row="12" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+                    <Label Content="* Mouse drag + Ctrl set inner rectangle"   Grid.Row="12" Grid.ColumnSpan="2" Margin="5"/>
+                    <Label Content="** Mouse drag  + Alt set horizontal line"  Grid.Row="13" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
+                    <Label Content="** Mouse drag + Ctrl set vertical line"    Grid.Row="14" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="5,-5,5,5"/>
+                    <Label Content="** Mouse drag + Shift set inner rectangle" Grid.Row="14" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="5"/>
 
 
                 </Grid>
